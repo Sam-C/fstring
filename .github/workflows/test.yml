@@ -1,4 +1,4 @@
-name: FString Test
+name: Test
 on: [push]
 jobs:
   test:
@@ -6,10 +6,25 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+
       - name: Set up MATLAB
         uses: matlab-actions/setup-matlab@v2
+
       - name: Run tests
         uses: matlab-actions/run-tests@v2
         with:
-          test-results-junit: test-results/results.xml
           code-coverage-cobertura: code-coverage/coverage.xml
+          test-results-junit: test-results/results.xml
+
+      - name: Upload code coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-coverage
+          path: code-coverage/coverage.xml
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results
+          path: test-results/results.xml
